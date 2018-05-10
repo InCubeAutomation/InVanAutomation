@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Trial 2 with TestNG">
+    <test name="T2-1" >
+        <parameter name="EmulatorName"  value="And-1"/>
+        <parameter name="DeviceName"  value="And-1"/>
+        <parameter name="AndroidVersion"  value="7.1.1"/>
+        <parameter name="ApplicationPath"  value="D:/InVan-1395.apk"/>
+        <classes>
+            <class name="start_of_day.Login">
+                <methods>
+                    <include name="login" />
+                </methods>
+            </class>
+            <class name="inventory.Load">
+                <methods>
+                    <include name="load">
+                        <parameter name="filePath"  value="src\test\resources\inventory_data\InventoryData.xlsx"/>
+                    </include>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
