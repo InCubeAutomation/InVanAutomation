@@ -1,29 +1,28 @@
 package read_data;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.testng.Assert;
 import testng_config_methods.TestNGConfig;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
 
-public class ReadInventoryData extends TestNGConfig {
+public class ReadData extends TestNGConfig {
 
-    public  List<List<String>> readInventoryData (String filePath, String inventoryMode) throws IOException, InvalidFormatException {
+    public  List<List<String>> readData (String filePath, String readDataMode) {
         List<List<String>> itemsData = new ArrayList<List<String>>();
         try {
             Sheet sheetToRead = null;
         DataFormatter dataFormatter = new DataFormatter();
         File file = new File(filePath);
-        Workbook inventoryData = WorkbookFactory.create(file);
-        Iterator<Sheet> sheetIterator = inventoryData.sheetIterator();
+        Workbook transactionsData = WorkbookFactory.create(file);
+        Iterator<Sheet> sheetIterator = transactionsData.sheetIterator();
 
-        for (Sheet sheet : inventoryData) {
-            if (inventoryMode.equals(sheet.getSheetName())) {
+        for (Sheet sheet : transactionsData) {
+            if (readDataMode.equals(sheet.getSheetName())) {
                 sheetToRead = sheet;
             }
             sheetIterator.next();

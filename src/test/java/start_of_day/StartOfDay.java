@@ -49,10 +49,7 @@ public class StartOfDay extends TestNGConfig  {
 
     @Test
     public void startOfDay() {
-        (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.
-                        visibilityOfElementLocated(sodMenuLocator));
-        driver.findElement(sodMenuLocator).click();
+        sharedFunctions.enterScreen("Start of day");
         sharedFunctions.getMenuName("Start of day");
         softAssert.assertEquals(driver.findElement(vanCodeLocator).getText(),"HA05", "Wrong Van Code");
         softAssert.assertEquals(driver.findElement(employeeNameLocator).getText(), "\"M\" Mohammad Tasawar", "Wrong Employee Name");
@@ -68,7 +65,7 @@ public class StartOfDay extends TestNGConfig  {
         sharedFunctions.getMenuName("Van Inspection");
         softAssert.assertTrue(driver.findElement(odometerTextLocator).getAttribute("focused") .equals("true"),"Not focused");
         driver.findElement(odometerTextLocator).sendKeys("999999999");
-        driver.navigate().back();
+        driver.hideKeyboard();
         driver.findElement(lightLocator).click();
         driver.findElement(breaksLocator).click();
         driver.findElement(radiatorLocator).click();
@@ -109,7 +106,7 @@ public class StartOfDay extends TestNGConfig  {
         driver.findElement(addMajorDefectButtonLocator).click();
         driver.findElement(majorDefectTextLocator).sendKeys("Def3");
         driver.findElement(addMajorDefectButtonLocator).click();
-        driver.navigate().back();
+        driver.hideKeyboard();
         driver.findElement(By.xpath(majorDefectDeleteXpath.get(1))).click();
         noOfMajorDefects--;
         Assert.assertEquals(

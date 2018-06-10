@@ -4,13 +4,10 @@ import io.appium.java_client.android.AndroidElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
 import shared_functions.SharedFunctions;
 import testng_config_methods.TestNGConfig;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,12 +36,9 @@ public class LoadOut extends TestNGConfig {
 
     @Test
     public void loadOut(){
-        (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.
-                        visibilityOfElementLocated(inventoryMenuLocator));
-        driver.findElement(inventoryMenuLocator).click();
+        sharedFunctions.enterScreen("Inventory");
         sharedFunctions.getMenuName("Inventory Menu");
-        driver.findElement(loadOutMenuLocator).click();
+        sharedFunctions.enterScreen("Load Out");
         sharedFunctions.enterStorekeeperPassword();
         sharedFunctions.getMenuName("Load Out");
 

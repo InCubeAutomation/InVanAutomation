@@ -29,6 +29,9 @@ public class Login extends TestNGConfig {
         Assert.assertEquals(driver.findElement(loggedInNameLocator).getText(), "\"M\" Mohammad Tasawar", "Wrong User");
         driver.findElement(usernameLocator).sendKeys("1");
         driver.findElement(passwordLocator).sendKeys("1");
+        if(driver.isKeyboardShown()) {
+            driver.hideKeyboard();
+        }
         driver.findElement(loginButtonLocator).click();
         (new WebDriverWait(driver, 10))
                 .until(ExpectedConditions.

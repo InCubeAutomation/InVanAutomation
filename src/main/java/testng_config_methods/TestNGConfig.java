@@ -1,6 +1,7 @@
 package testng_config_methods;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
@@ -15,7 +16,10 @@ public class TestNGConfig {
 
     public static  SoftAssert softAssert = new SoftAssert();
     public static AndroidDriver driver;
-    public String EmulatorName = null;
+    public static String EmulatorName;
+    public static String AndroidVersion;
+    public static WebDriverWait wait;
+
     AppiumDriverLocalService service = AppiumDriverLocalService.buildDefaultService();
 
     @Parameters({"EmulatorName", "DeviceName", "AndroidVersion", "ApplicationPath"})
@@ -25,8 +29,9 @@ public class TestNGConfig {
 
         DesiredCapabilities MobileDevice = DesiredCapabilities.android();
         MobileDevice.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
-        this.EmulatorName = EmulatorName;
-        if (!EmulatorName.isEmpty()) {
+        TestNGConfig.EmulatorName = EmulatorName;
+        TestNGConfig.AndroidVersion = AndroidVersion;
+        if (EmulatorName != null) {
             MobileDevice.setCapability("avd", EmulatorName);
         }
         MobileDevice.setCapability(MobileCapabilityType.DEVICE_NAME, DeviceName);
@@ -37,14 +42,15 @@ public class TestNGConfig {
         //MobileDevice.setCapability("appActivity",".SplashScreen");
         MobileDevice.setCapability("autoGrantPermissions", "true");
 
-        driver = new AndroidDriver(service.getUrl(), MobileDevice);
-        WebDriverWait wait = new WebDriverWait(driver, 120);
+        driver = new AndroidDriver<MobileElement> (service.getUrl(), MobileDevice);
+        wait = new WebDriverWait(driver, 120);
+
     }
 
     @AfterTest
     public void teardown() {
        driver.quit();
-        if (!EmulatorName.isEmpty()) {
+        if (EmulatorName != null) {
             try {
                 Runtime.getRuntime().exec("adb -s emulator-5554 emu kill");
             } catch (IOException e) {
