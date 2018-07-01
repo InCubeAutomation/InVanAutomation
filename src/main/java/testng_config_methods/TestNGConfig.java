@@ -1,6 +1,5 @@
 package testng_config_methods;
 
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.MobileCapabilityType;
@@ -56,6 +55,11 @@ public class TestNGConfig {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        try {
+            Runtime.getRuntime().exec("adb kill-server");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         service.stop();
     }

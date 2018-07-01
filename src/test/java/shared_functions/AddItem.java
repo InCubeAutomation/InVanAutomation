@@ -10,16 +10,24 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import testng_config_methods.TestNGConfig;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 
 public class AddItem extends TestNGConfig {
 
 
-    public static float addItem(String itemCode, String packType, String qty, boolean taxable , boolean isPromotion ,String returnStatus,String returnReason, String expiryDate) {
+    public static BigDecimal addItem(String itemCode, String packType, String qty, boolean taxable , boolean discountEditable, boolean isPromotion , String returnStatus, String returnReason, String expiryDate) {
         SharedFunctions sharedFunctions = new SharedFunctions();
+        int numberOfDigits = 3;
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator(',');
+        symbols.setDecimalSeparator('.');
+        DecimalFormat df = new DecimalFormat("#,###.###",symbols);
+        df.setParseBigDecimal(true);
+        df.setRoundingMode(RoundingMode.HALF_UP);
         By searchBarLocator = By.id("sv_search");
         By itemCodeValueLocator = By.id("itemCodeTextView");
         By uomValueLocator = By.id("uomTextView");
@@ -27,8 +35,13 @@ public class AddItem extends TestNGConfig {
         By saveItemButtonLocator = By.id("btn_addItem_save");
         By itemPriceLocator = By.id("txt_addItem_fullPrice");
         By itemDiscountLocator = By.id("txt_addItem_disc");
-        //By itemDiscountTypeLocator = By.id("txt_addItem_disctype");
-        By itemDiscountTypeLocator = By.id("text1");
+        By itemDiscountTypeLocator;
+        By itemDiscountTypeSpinnerLocator = By.id("spinner_discount_type");
+        if(discountEditable) {
+            itemDiscountTypeLocator = By.id("text1");
+        } else {
+            itemDiscountTypeLocator = By.id("txt_addItem_disctype");
+        }
         By itemTaxLocator = By.id("txt_addItem_tax");
         By itemValueLocator = By.id("txt_addItem_itemValue");
         By totalInvoiceLocator = By.id("txt_total_inv");
@@ -36,22 +49,21 @@ public class AddItem extends TestNGConfig {
         By returnReasonLocator = By.id("cmb_addItem_reason");
         By expiryDateLocator = By.id("btn_addItem_expiryDate");
 
-        float itemExpectedPrice = 10;
-        float itemActualPrice = 0;
-        float itemExpectedDiscount = 0;
+        BigDecimal itemExpectedPrice = new BigDecimal("0.00");
+        BigDecimal itemActualPrice = new BigDecimal("0.00");
+        BigDecimal itemExpectedDiscount = new BigDecimal("0.00");
         String itemExpectedDiscountType = "ABC";
         String itemActualDiscountType = "ABC";
         String focusable;
-        float itemActualDiscount = 0;
-        float itemActualTax = 0;
-        float itemExpectedTax = 0;
-        float itemActualValue = 0;
+        BigDecimal itemActualDiscount = new BigDecimal("0.00");
+        BigDecimal itemActualTax = new BigDecimal("0.00");
+        BigDecimal itemExpectedTax = new BigDecimal("0.00");
+        BigDecimal itemActualValue = new BigDecimal("0.00");
         boolean calculateTaxBeforeDiscount = false;
-        float itemExpectedValue = 0;
-        float itemActualTaxValue = 0;
-        float quantity = Float.valueOf(qty);
-        DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.HALF_UP);
+        BigDecimal itemExpectedValue = new BigDecimal("0.00");
+        BigDecimal itemActualTaxValue = new BigDecimal("0.00");
+        BigDecimal quantity = new BigDecimal(qty);
+
 
         driver.findElement(searchBarLocator).click();
         driver.findElement(searchBarLocator).sendKeys(itemCode);
@@ -97,40 +109,65 @@ public class AddItem extends TestNGConfig {
             sharedFunctions.pickDateFromAndroid7Calendar(expiryDate);
         }
 
-        itemActualPrice = Float.valueOf(driver.findElement(itemPriceLocator).getText().replace(",", ""));
+        try {
+            itemActualPrice = (BigDecimal) df.parse((driver.findElement(itemPriceLocator).getText().replace(" ","")));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 //        Assert.assertEquals(itemActualPrice,itemExpectedPrice,"Wrong Price");
         if (!isPromotion){
-            itemActualDiscount = Float.valueOf(driver.findElement(itemDiscountLocator).getText().replace(",", ""));
-        itemActualDiscountType = driver.findElement(itemDiscountTypeLocator).getText();
+            try {
+                itemActualDiscount = (BigDecimal) df.parse((driver.findElement(itemDiscountLocator).getText().replace(" ","")));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if(discountEditable){
+            itemActualDiscountType = driver.findElement(itemDiscountTypeSpinnerLocator).findElement(itemDiscountTypeLocator).getText();
+
+        } else {
+            itemActualDiscountType = driver.findElement(itemDiscountTypeLocator).getText();
+        }
     }
 if (taxable) {
-    itemActualTax = Float.valueOf(driver.findElement(itemTaxLocator).getText().replace(",", ""));
+    try {
+        itemActualTax = (BigDecimal) df.parse((driver.findElement(itemTaxLocator).getText().replace(" ","")));
+    } catch (ParseException e) {
+        e.printStackTrace();
+    }
 }
   //
         //         Assert.assertEquals(itemActualDiscount,itemExpectedDiscount,"Wrong Discount");
         if (!isPromotion) {
-            itemActualValue = Float.valueOf(driver.findElement(itemValueLocator).getText().replace(",", ""));
-
-        if(calculateTaxBeforeDiscount==false) {
-            if(itemActualDiscountType =="%") {
-                itemActualTaxValue = itemActualPrice * quantity * (1 - itemActualDiscount / 100)
-                        * itemActualTax / 100;
-                itemExpectedValue =  itemActualPrice * quantity * (1 - itemActualDiscount / 100)+itemActualTaxValue;
+            try {
+                itemActualValue = (BigDecimal) df.parse(driver.findElement(itemValueLocator).getText().replace(" ",""));
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
+
+            if(calculateTaxBeforeDiscount==false) {
+            if(itemActualDiscountType =="%") {
+                itemActualTaxValue = itemActualPrice.multiply(quantity).multiply(new BigDecimal("1.00").subtract(itemActualDiscount
+                        .divide(new BigDecimal("100.00")))).multiply(itemActualTax.divide(new BigDecimal("100.00"))).setScale(numberOfDigits,RoundingMode.HALF_UP);
+                itemExpectedValue = itemActualPrice.multiply(quantity).multiply(new BigDecimal(1.00).subtract(itemActualDiscount
+                        .divide(new BigDecimal("100.00")))).add(itemActualTaxValue).setScale(numberOfDigits,RoundingMode.HALF_UP);
+                            }
             else {
-                itemActualTaxValue = (itemActualPrice - itemActualDiscount) * quantity * itemActualTax / 100;
-                itemExpectedValue =  (itemActualPrice - itemActualDiscount) * quantity + itemActualTaxValue ;
+                itemActualTaxValue = (itemActualPrice.subtract(itemActualDiscount)).multiply(quantity).multiply(itemActualTax
+                        .divide(new BigDecimal("100.00"))).setScale(numberOfDigits,RoundingMode.HALF_UP);
+                itemExpectedValue = ((itemActualPrice.subtract(itemActualDiscount)).multiply(quantity)).add(itemActualTaxValue).setScale(numberOfDigits,RoundingMode.HALF_UP);
             }
         }
         else {
             if(itemActualDiscountType =="%") {
-                itemExpectedValue = itemActualPrice * quantity * (1 - itemActualDiscount / 100)
-                        + (itemActualPrice * quantity * itemActualTax) / 100;
+                itemActualTaxValue = itemActualPrice.multiply(quantity).multiply(itemActualTax).divide(new BigDecimal("100.00")).setScale(numberOfDigits,RoundingMode.HALF_UP);
+                itemExpectedValue = itemActualPrice.multiply(quantity).multiply(new BigDecimal("1.00").subtract(itemActualDiscount
+                        .divide(new BigDecimal("100.00")))).add(itemActualPrice).add(itemActualTaxValue).setScale(numberOfDigits,RoundingMode.HALF_UP);
+
             }
             else
             {
-                itemExpectedValue = (itemActualPrice - itemActualDiscount) * quantity
-                        + (itemActualPrice * quantity * itemActualTax) / 100;
+                itemActualTaxValue = itemActualPrice.multiply(quantity).multiply(itemActualTax).divide(new BigDecimal("100.00")).setScale(numberOfDigits,RoundingMode.HALF_UP);
+                itemExpectedValue = (itemActualValue.subtract(itemActualDiscount)).multiply(quantity).add(itemActualTaxValue).setScale(numberOfDigits,RoundingMode.HALF_UP);
             }
         }
         Assert.assertEquals(itemActualValue,itemExpectedValue,"Wrong Item Value");

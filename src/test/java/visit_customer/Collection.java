@@ -2,9 +2,12 @@ package visit_customer;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidKeyCode;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import read_data.ReadData;
+import read_data_excel.ReadData;
 import shared_functions.SharedFunctions;
 import testng_config_methods.TestNGConfig;
 
@@ -30,6 +33,7 @@ public class Collection  extends TestNGConfig {
     By branchNameLocator = By.id("cbx_branch");
     By chequeNumberLocator = By.id("txt_cheque");
     By chequeDateLocator = By.id("txt_date");
+    By invoiceListViewLocator = By.id("lst_Invoices");
     
     List<List<String>> invoicesToCollect = new ArrayList<List<String>>();
     List<List<String>> paymentmethodsData = new ArrayList<List<String>>();
@@ -46,6 +50,9 @@ public class Collection  extends TestNGConfig {
 
         sharedFunctions.enterScreen("Collection");
         sharedFunctions.getMenuName("Collection");
+        (new WebDriverWait(driver, 10))
+                .until(ExpectedConditions.
+                        visibilityOfElementLocated(invoiceListViewLocator));
         for(int i=0;i<numberOfInvoicesToBeCollected;i++) {
             String invoiceToSelect = invoicesToCollect.get(i).get(0);
             String amountToPay = invoicesToCollect.get(i).get(1);
@@ -122,7 +129,9 @@ public class Collection  extends TestNGConfig {
                     sharedFunctions.scrollDown();
                 }
                 driver.findElement(chequeNumberLocator).sendKeys(chequeNumber);
-                //driver.hideKeyboard();
+                if(driver.isKeyboardShown()) {
+                    driver.hideKeyboard();
+                }
                 driver.findElement(chequeDateLocator).click();
                 driver.findElement(chequeDateLocator).click();
                 sharedFunctions.pickDateFromAndroid7Calendar(chequeDate);
@@ -131,7 +140,9 @@ public class Collection  extends TestNGConfig {
             driver.findElement(savePaymentLocator).click();
         }
             driver.findElement(payInvoicesLocator).click();
-            System.out.println("MHND");
-
+        if(sharedFunctions.elementExists(invoiceListViewLocator)) {
+            driver.navigate().back();
+        }
+            sharedFunctions.getMenuName("Customer Menu");
     }
 }

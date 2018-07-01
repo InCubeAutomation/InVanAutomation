@@ -25,7 +25,6 @@ public class Login extends TestNGConfig {
         (new WebDriverWait(driver, 10))
                 .until(ExpectedConditions.
                         visibilityOfElementLocated(loggedInNameLocator));
-        System.out.println(driver.findElement(loggedInNameLocator).getText());
         Assert.assertEquals(driver.findElement(loggedInNameLocator).getText(), "\"M\" Mohammad Tasawar", "Wrong User");
         driver.findElement(usernameLocator).sendKeys("1");
         driver.findElement(passwordLocator).sendKeys("1");

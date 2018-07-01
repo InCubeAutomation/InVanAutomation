@@ -19,17 +19,16 @@ import java.util.List;
 public class SharedFunctions extends TestNGConfig {
 
     public void enterStorekeeperPassword(){
-    String inventoryOperationsPassword = "123";
-    By passwordLocator = By.id("txt_key");
-    By enterStorekeeperPasswordTextLocator = By.id("lblConfirmationMsg");
-    By okKey = By.id("btn_key_ok");
+        if(elementExists(By.id("parentPanel"))) {
+            String inventoryOperationsPassword = "123";
+            By passwordLocator = By.id("txt_key");
+            By enterStorekeeperPasswordTextLocator = By.id("lblConfirmationMsg");
+            By okKey = By.id("btn_key_ok");
 
-            (new WebDriverWait(driver, 10))
-            .until(ExpectedConditions.
-                           visibilityOfElementLocated(passwordLocator));
-        softAssert.assertTrue(driver.findElement(enterStorekeeperPasswordTextLocator).getText().equals("Enter Store Keeper Password:"),"Wrong Message");
-        driver.findElement(passwordLocator).sendKeys(inventoryOperationsPassword);
-        driver.findElement(okKey).click();
+            softAssert.assertTrue(driver.findElement(enterStorekeeperPasswordTextLocator).getText().equals("Enter Store Keeper Password:"), "Wrong Message");
+            driver.findElement(passwordLocator).sendKeys(inventoryOperationsPassword);
+            driver.findElement(okKey).click();
+        }
     }
 
     public void enterScreen(String menuName){

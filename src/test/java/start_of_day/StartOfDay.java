@@ -51,6 +51,17 @@ public class StartOfDay extends TestNGConfig  {
     public void startOfDay() {
         sharedFunctions.enterScreen("Start of day");
         sharedFunctions.getMenuName("Start of day");
+        if(sharedFunctions.elementExists(odometerTextLocator)){
+            String focused =  driver.findElement(odometerTextLocator).getAttribute("focused");
+            if(focused=="true"){
+                driver.getKeyboard().sendKeys("999999999");
+            }
+            else {
+                driver.findElement(odometerTextLocator).click();
+                driver.getKeyboard().sendKeys("999999999");
+            }
+            driver.hideKeyboard();
+        }
         softAssert.assertEquals(driver.findElement(vanCodeLocator).getText(),"HA05", "Wrong Van Code");
         softAssert.assertEquals(driver.findElement(employeeNameLocator).getText(), "\"M\" Mohammad Tasawar", "Wrong Employee Name");
         softAssert.assertEquals(driver.findElement(employeeCodeLocator).getText(), "VS004", "Wrong Employee Code");
@@ -63,8 +74,15 @@ public class StartOfDay extends TestNGConfig  {
     @Test
     public void inspection() {
         sharedFunctions.getMenuName("Van Inspection");
-        softAssert.assertTrue(driver.findElement(odometerTextLocator).getAttribute("focused") .equals("true"),"Not focused");
-        driver.findElement(odometerTextLocator).sendKeys("999999999");
+        String focused =  driver.findElement(odometerTextLocator).getAttribute("focused");
+        softAssert.assertEquals(focused,"true","Not focused");
+        if(focused=="true"){
+            driver.getKeyboard().sendKeys("999999999");
+        }
+        else {
+            driver.findElement(odometerTextLocator).click();
+            driver.getKeyboard().sendKeys("999999999");
+        }
         driver.hideKeyboard();
         driver.findElement(lightLocator).click();
         driver.findElement(breaksLocator).click();

@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Trial 2 with TestNG">
-    <test name="T2-1" >
+<suite name="InVan Automation">
+    <test name="InVan General Cycle" >
         <parameter name="EmulatorName"  value="And-1"/>
         <parameter name="DeviceName"  value="And-1"/>
+        <!--parameter name="DeviceName"  value="2XJDU17610000263"/-->
         <parameter name="AndroidVersion"  value="7.1.1"/>
-        <parameter name="ApplicationPath"  value="D:/InVan-1395.apk"/>
+        <parameter name="ApplicationPath"  value="D:/InVan-20180628-16-46.apk"/>
         <classes>
             <class name="start_of_day.Login">
                 <methods>
                     <include name="login" />
+                </methods>
+            </class>
+            <class name="start_of_day.StartOfDay">
+                <methods>
+                    <include name="startOfDay" />
+                </methods>
+            </class>
+            <class name="inventory.LoadOut">
+                <methods>
+                    <include name="loadOut" />
                 </methods>
             </class>
             <class name="inventory.Load">
@@ -17,6 +28,56 @@
                     <include name="load">
                         <parameter name="filePath"  value="src\test\resources\inventory_data\InventoryData.xlsx"/>
                     </include>
+                </methods>
+            </class>
+            <class name="visit_customer.VisitCustomer">
+                <methods>
+                    <include name="selectCustomer">
+                        <parameter name="outletCode"  value="SHJ0438"/>
+                        <parameter name="outletName"  value="ABU MOOSAH"/>
+                    </include>
+                    <include name="goldenMinute"></include>
+                </methods>
+            </class>
+            <class name="visit_customer.Sales">
+                <methods>
+                    <include name="sales">
+                        <parameter name="filePath"  value="src\test\resources\customer_data\CustomerTransactions.xlsx"/>
+                        <parameter name="salesMode"  value="Credit"/>
+                    </include>
+                </methods>
+            </class>
+            <class name="visit_customer.Returns">
+                <methods>
+                    <include name="returns">
+                        <parameter name="filePath"  value="src\test\resources\customer_data\CustomerTransactions.xlsx"/>
+                    </include>
+                </methods>
+            </class>
+            <class name="visit_customer.Collection">
+                <methods>
+                    <include name="collection">
+                        <parameter name="filePath"  value="src\test\resources\customer_data\CustomerTransactions.xlsx"/>
+                    </include>
+                </methods>
+            </class>
+            <class name="visit_customer.EndVisit">
+                <methods>
+                    <include name="endVisit"/>
+                </methods>
+            </class>
+            <class name="inventory.LoadIn">
+                <methods>
+                    <include name="loadIn">
+                        <parameter name="filePath"  value="src\test\resources\inventory_data\InventoryData.xlsx"/>
+                    </include>
+                </methods>
+            </class>
+            <class name="end_of_day.EndOfDay">
+                <methods>
+                    <include name="endOfDay">
+                        <parameter name="filePath"  value="src\test\resources\inventory_data\InventoryData.xlsx"/>
+                        </include>
                 </methods>
             </class>
         </classes>

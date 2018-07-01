@@ -41,7 +41,6 @@ public class LoadOut extends TestNGConfig {
         sharedFunctions.enterScreen("Load Out");
         sharedFunctions.enterStorekeeperPassword();
         sharedFunctions.getMenuName("Load Out");
-
         (new WebDriverWait(driver, 10))
                 .until(ExpectedConditions.
                         visibilityOfElementLocated(listViewLocator));
