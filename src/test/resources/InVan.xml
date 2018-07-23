@@ -6,7 +6,7 @@
         <parameter name="DeviceName"  value="And-1"/>
         <!--parameter name="DeviceName"  value="2XJDU17610000263"/-->
         <parameter name="AndroidVersion"  value="7.1.1"/>
-        <parameter name="ApplicationPath"  value="D:/InVan-20180628-16-46.apk"/>
+        <parameter name="ApplicationPath"  value="D:/InVan-debug.apk"/>
         <classes>
             <class name="start_of_day.Login">
                 <methods>

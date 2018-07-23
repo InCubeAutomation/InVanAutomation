@@ -5,7 +5,6 @@ import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Parameters;
@@ -14,6 +13,7 @@ import shared_functions.SharedFunctions;
 import sqlite_access.Accounts;
 import testng_config_methods.TestNGConfig;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 public class VisitCustomer extends TestNGConfig {
@@ -30,11 +30,12 @@ public class VisitCustomer extends TestNGConfig {
 
     @Parameters({"outletCode","outletName"})
     @Test
-public void selectCustomer(String outletCode, String outletName) {
+public void selectCustomer(String outletCode, String outletName) throws IOException {
         sharedFunctions.enterScreen("Visit Customer");
         (new WebDriverWait(driver, 10))
                 .until(ExpectedConditions.
                         visibilityOfElementLocated(searchButtonLocator));
+
         try {
             Float[] accountData = accounts.outletBalanceAndCredit(outletCode);
             creditLimit = accountData[0];
@@ -42,6 +43,7 @@ public void selectCustomer(String outletCode, String outletName) {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         driver.findElement(searchButtonLocator).click();
         driver.getKeyboard().sendKeys(outletCode);
         driver.hideKeyboard();

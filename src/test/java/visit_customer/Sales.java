@@ -64,8 +64,7 @@ public class Sales extends TestNGConfig {
 
         sharedFunctions.enterScreen("Sales");
         sharedFunctions.getMenuName("Sales");
-
-        for (int i = 0; i < noOfSalesItems; i++) {
+         for (int i = 0; i < noOfSalesItems; i++) {
             itemAmount = AddItem.addItem(itemsData.get(i).get(0), itemsData.get(i).get(1), itemsData.get(i).get(2),taxable,true,false,"","","");
             salesValue = salesValue.add(itemAmount);
             itemAmount = BigDecimal.ZERO;
@@ -79,7 +78,9 @@ public class Sales extends TestNGConfig {
         }
         if (noOfPromotions>0 && (AndroidVersion.equals("7.1.1") || AndroidVersion.equals("7.0") || AndroidVersion.equals("8.0"))){
             driver.pressKeyCode(AndroidKeyCode.KEYCODE_APP_SWITCH);
-            driver.findElementByAccessibilityId("InVan In Van").click();
+            driver.pressKeyCode(AndroidKeyCode.KEYCODE_APP_SWITCH);
+
+
         }
         for (int i =0; i<noOfPromotions;i++) {
             driver.findElement(btnTakePromotionLocator).click();

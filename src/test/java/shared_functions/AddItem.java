@@ -21,7 +21,7 @@ public class AddItem extends TestNGConfig {
 
     public static BigDecimal addItem(String itemCode, String packType, String qty, boolean taxable , boolean discountEditable, boolean isPromotion , String returnStatus, String returnReason, String expiryDate) {
         SharedFunctions sharedFunctions = new SharedFunctions();
-        int numberOfDigits = 3;
+        int numberOfDigits = 2;
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setGroupingSeparator(',');
         symbols.setDecimalSeparator('.');

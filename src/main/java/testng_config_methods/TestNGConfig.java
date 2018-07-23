@@ -40,7 +40,8 @@ public class TestNGConfig {
         //MobileDevice.setCapability("appPackage","com.incube.invan");
         //MobileDevice.setCapability("appActivity",".SplashScreen");
         MobileDevice.setCapability("autoGrantPermissions", "true");
-
+        MobileDevice.setCapability("disableAndroidWatchers","true");
+        MobileDevice.setCapability("skipUnlock","true");
         driver = new AndroidDriver<MobileElement> (service.getUrl(), MobileDevice);
         wait = new WebDriverWait(driver, 120);
 

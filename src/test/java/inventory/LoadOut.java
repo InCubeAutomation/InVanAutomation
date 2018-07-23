@@ -25,7 +25,7 @@ public class LoadOut extends TestNGConfig {
     By itemQtyLocator = By.id("txt_stock_qty");
     By saveButtonLocator = By.id("action_save");
     By yesSaveLocator = By.id("button1");
-    String[] expectedPackandQtyArray = {"4001 - Outer = 2","4002 - Carton = 1","4003 - Carton = 2","4003 - Outer = 4"};
+    String[] expectedPackandQtyArray = {"4001 - Outer = 2","4001 - Carton = 11","4002 - Carton = 1","4002 - Carton = 9"};
     List<String> expectedPackandQty  = Arrays.asList(expectedPackandQtyArray);
 
     List<AndroidElement> itemCardLocators =  new ArrayList<>();
@@ -56,7 +56,6 @@ public class LoadOut extends TestNGConfig {
         Collections.sort(expectedPackandQty);
         softAssert.assertEquals(actualPackandQty,expectedPackandQty);
 
-        softAssert.assertAll();
         // To handle later :  remove duplicates
         // check addAll method ?! replace it with more proper method
 /*
@@ -84,5 +83,6 @@ public class LoadOut extends TestNGConfig {
         sharedFunctions.getMenuName("Inventory Menu");
         driver.navigate().back();
         sharedFunctions.getMenuName("Main Menu");
+        softAssert.assertAll();
     }
 }

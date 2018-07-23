@@ -97,7 +97,6 @@ ReadData readData = new ReadData();
         }
         TouchAction touchAction = new TouchAction(driver);
         touchAction.longPress(PointOption.point(pressX,bottomY-1)).waitAction(new WaitOptions().withDuration(Duration.ofMillis(400))).moveTo(PointOption.point(0,topY-bottomY)).release().perform();
-        System.out.println("MHND");
 
     }
             driver.findElement(settlementButtonLocator).click();
@@ -115,7 +114,6 @@ ReadData readData = new ReadData();
                 }
             }
             sharedFunctions.getMenuName("Main Menu");
-        System.out.println("MHND");
 
     }
 }

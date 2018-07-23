@@ -1,6 +1,8 @@
 package sqlite_access;
 
 
+import testng_config_methods.TestNGConfig;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,14 +11,17 @@ import java.sql.*;
 
 
 //readDataFromSqlite
-public  class SqliteAccess {
-    public ResultSet querySqliteData (String sqlStatement) throws SQLException {
+public  class SqliteAccess extends TestNGConfig {
+    // connection is created static so you are able to close it in another classes after using it
+    public static Connection connection = null;
 
-        Connection connection = null;
+    public ResultSet querySqliteData (String sqlStatement) throws SQLException, IOException {
+        if (connection!= null){
+            connection.close();
+        }
         ResultSet set = null;
-        String filePath = "D:/TestDB";
+        String filePath = "D://TestDB//";
         File directory = new File(filePath);
-        File file = new File(filePath + "/InCube.sqlite");
         if (!directory.exists()) {
             try {
                 Files.createDirectories(Paths.get(filePath));
@@ -24,17 +29,10 @@ public  class SqliteAccess {
                 e.printStackTrace();
             }
         }
-        try {
-            Runtime.getRuntime().exec("adb -s emulator-5554 pull /sdcard/InCube/data/InCube.sqlite " +
-                    filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+        byte[] fileBase64 = driver.pullFile("/sdcard/InCube/data/InCube.sqlite");
+        Files.write(Paths.get(filePath+"InCube.sqlite"), fileBase64);
+
         try {
             // create a database connection
             connection = DriverManager.getConnection("jdbc:sqlite:D:/TestDB/InCube.sqlite");

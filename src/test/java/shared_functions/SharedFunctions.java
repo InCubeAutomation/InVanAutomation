@@ -4,13 +4,17 @@ import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import testng_config_methods.TestNGConfig;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -211,5 +215,12 @@ public class SharedFunctions extends TestNGConfig {
         driver.findElementByAccessibilityId(dateToSelect).click();
         driver.findElement(calendarOkuttonLocator).click();
     }
-
+        public void takeScreenshot(String filePath){
+            File srcFiler = driver.getScreenshotAs(OutputType.FILE);
+            try {
+                FileUtils.copyFile(srcFiler, new File(filePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 }
