@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="InVan Automation">
-    <test name="InVan General Cycle" >
-        <parameter name="EmulatorName"  value="And-1"/>
-        <parameter name="DeviceName"  value="And-1"/>
-        <!--parameter name="DeviceName"  value="2XJDU17610000263"/-->
-        <parameter name="AndroidVersion"  value="7.1.1"/>
-        <parameter name="ApplicationPath"  value="D:/InVan-debug.apk"/>
+<suite name="InVan General Cycle">
+    <parameter name="EmployeeCode"  value="VS004"/>
+    <parameter name="EmulatorName"  value="And-1"/>
+    <parameter name="DeviceName"  value="And-1"/>
+    <!--parameter name="DeviceName"  value="2XJDU17610000263"/-->
+    <parameter name="AndroidVersion"  value="7.1.1"/>
+    <parameter name="ApplicationPath"  value="D:/InVan-debug.apk"/>
+    <test name="Start of Day and Load Out" >
         <classes>
             <class name="start_of_day.Login">
                 <methods>
@@ -30,6 +31,28 @@
                     </include>
                 </methods>
             </class>
+        </classes>
+    </test>
+    <test name="Visit Customer and Exit" >
+        <classes>
+            <class name="visit_customer.VisitCustomer">
+                <methods>
+                    <include name="selectCustomer">
+                        <parameter name="outletCode"  value="SHJ0438"/>
+                        <parameter name="outletName"  value="ABU MOOSAH"/>
+                    </include>
+                    <include name="goldenMinute"></include>
+                </methods>
+            </class>
+            <class name="visit_customer.EndVisit">
+                <methods>
+                    <include name="endVisit"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    <test name="Visit Customer With Transactions" >
+        <classes>
             <class name="visit_customer.VisitCustomer">
                 <methods>
                     <include name="selectCustomer">
@@ -42,8 +65,9 @@
             <class name="visit_customer.Sales">
                 <methods>
                     <include name="sales">
-                        <parameter name="filePath"  value="src\test\resources\customer_data\CustomerTransactions.xlsx"/>
+                        <parameter name="outletCode"  value="SHJ0438"/>
                         <parameter name="salesMode"  value="Credit"/>
+                        <parameter name="filePath"  value="src\test\resources\customer_data\CustomerTransactions.xlsx"/>
                     </include>
                 </methods>
             </class>
@@ -66,6 +90,10 @@
                     <include name="endVisit"/>
                 </methods>
             </class>
+        </classes>
+    </test>
+    <test name="Load In and EOD" >
+        <classes>
             <class name="inventory.LoadIn">
                 <methods>
                     <include name="loadIn">

@@ -11,14 +11,15 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import sqlite_access.EmployeeKeys;
 import testng_config_methods.TestNGConfig;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class SharedFunctions extends TestNGConfig {
 
@@ -205,9 +206,7 @@ public class SharedFunctions extends TestNGConfig {
             for (int i = currentmonth; i < month; i++) {
                 driver.findElement(calendarNextMonthLocator).click();
             }
-        }
-
-        if (month < currentmonth) {
+        } else if (month < currentmonth) {
             for (int i = currentmonth; i > month; i--) {
                 driver.findElement(calendarPreviousMonthLocator).click();
             }
@@ -223,4 +222,207 @@ public class SharedFunctions extends TestNGConfig {
                 e.printStackTrace();
             }
         }
+    public void enterKey() throws SQLException, IOException {
+        int keyTypeID = 0;
+        String  Keyvalue = null;
+        By keyTypeLocator = By.id("lbl_keyType");
+        By keyTextLocator = By.id("txt_key");
+        By employeeKeyOKButtonLocator =By.id("btn_employeekey_ok");
+        (new WebDriverWait(driver, 10))
+                .until(ExpectedConditions.
+                        visibilityOfElementLocated(keyTypeLocator));
+        String keyType = driver.findElement(keyTypeLocator).getText().trim();
+        switch (keyType){
+            case  "Sell on hold customer key" :
+                keyTypeID = 1;
+                break;
+            case  "Sell customer violated payment term key" :
+                keyTypeID = 2;
+                break;
+            case  "Sell customer exceeded credit limit key" :
+                keyTypeID = 3;
+                break;
+            case  "Edit price key" :
+                keyTypeID = 4;
+                break;
+            case  "Edit discount key" :
+                keyTypeID = 5;
+                break;
+            case  "Edit FOC key" :
+                keyTypeID = 6;
+                break;
+            case  "Void payment key" :
+                keyTypeID = 7;
+                break;
+            case  "Skip promotion key" :
+                keyTypeID = 8;
+                break;
+            case  "Return good items key" :
+                keyTypeID = 9;
+                break;
+            case  "Exchange items between vans key" :
+                keyTypeID = 10;
+                break;
+            case  "Void invoice key" :
+                keyTypeID = 11;
+                break;
+            case  "Visit customer out off route key" :
+                keyTypeID = 12;
+                break;
+            case  "Visit customer without barcode scanning key" :
+                keyTypeID = 13;
+                break;
+            case  "Change currency exchange rate for customer key" :
+                keyTypeID = 14;
+                break;
+            case  "Change currency exchange rate permanently key" :
+                keyTypeID = 15;
+                break;
+            case  "Allow unlimited FOC key" :
+                keyTypeID = 16;
+                break;
+            case  "Change System Date Key" :
+                keyTypeID = 17;
+                break;
+            case  "Create order for customer exceeded credit limit key" :
+                keyTypeID = 18;
+                break;
+            case  "Skip customer key" :
+                keyTypeID = 19;
+                break;
+            case  "Allow Exchange Key" :
+                keyTypeID = 20;
+                break;
+            case  "Order to customer violated payment terms key" :
+                keyTypeID = 21;
+                break;
+            case  "Allow Partial Delivery In Sales Order Key" :
+                keyTypeID = 22;
+                break;
+            case  "Create order for on hold customer key" :
+                keyTypeID = 23;
+                break;
+            case  "Allow Customer Exceed Containers Limit Key" :
+                keyTypeID = 24;
+                break;
+            case  "Edit price on return key" :
+                keyTypeID = 25;
+                break;
+            case  "Skip promotion Individually key" :
+                keyTypeID = 26;
+                break;
+            case  "Create Return Order For OnHold Customer Key" :
+                keyTypeID = 27;
+                break;
+            case  "Create Return Order For Customer Violated Payment Term Key" :
+                keyTypeID = 28;
+                break;
+            case  "Create exchange order for customer exceeded credit limit key" :
+                keyTypeID = 29;
+                break;
+            case  "Create exchange order for customer violated payment term key" :
+                keyTypeID = 30;
+                break;
+            case  "Create exchange order for onHold customer key" :
+                keyTypeID = 31;
+                break;
+            case  "Allow reschedule delivery key" :
+                keyTypeID = 32;
+                break;
+            case  "Allow reject delivery key" :
+                keyTypeID = 33;
+                break;
+            case  "Apply Cash Discount Key" :
+                keyTypeID = 34;
+                break;
+            case  "Apply Supervisor Discount Key" :
+                keyTypeID = 35;
+                break;
+            case  "allow Credit Sales for Cash Customers" :
+                keyTypeID = 36;
+                break;
+            case  "End Customer Visit Without Barcode Scanning Key" :
+                keyTypeID = 37;
+                break;
+            case  "Print Original Invoice Key" :
+                keyTypeID = 38;
+                break;
+            case  "Skip must sell items key" :
+                keyTypeID = 39;
+                break;
+            case  "Increase num of invoice due dates key" :
+                keyTypeID = 40;
+                break;
+            case  "Allow Edit Discount With Password On Returns" :
+                keyTypeID = 41;
+                break;
+            case  "Allow Visit Customer Out Of Geo Fencing Key" :
+                keyTypeID = 42;
+                break;
+            case  "Allow Add New Customers Key" :
+                keyTypeID = 43;
+                break;
+            case  "Allow Edit Price To Be Out Of Range Key" :
+                keyTypeID = 44;
+                break;
+            case  "Apply Key To Edit Header Discount" :
+                keyTypeID = 45;
+                break;
+            case  "Apply Key To Sell Customers Exceeding Bill Number" :
+                keyTypeID = 46;
+                break;
+            case  "Apply Key To Process Exchange On Hold Customer" :
+                keyTypeID = 47;
+                break;
+            case  "Apply Key To Process Exchange Customer Violated Payment Term" :
+                keyTypeID = 48;
+                break;
+            case  "Apply Key To Process Exchange Customer Exceeds Credit Limit" :
+                keyTypeID = 49;
+                break;
+            case  "COS Key" :
+                keyTypeID = 50;
+                break;
+            case  "Allow Fixed Incentive Key" :
+                keyTypeID = 51;
+                break;
+            case  "Allow Variable Incentive Key" :
+                keyTypeID = 52;
+                break;
+            case  "Allow Prison FOC Key" :
+                keyTypeID = 53;
+                break;
+            case  "Allow Guarantees FOC Key" :
+                keyTypeID = 54;
+                break;
+            case  "Sell Customer Exceeds Commitment Limit" :
+                keyTypeID = 55;
+                break;
+            case  "Allow Returns Key" :
+                keyTypeID = 56;
+                break;
+            case  "Allow Giving Unlimited FOC For OnHold Customer with Password" :
+                keyTypeID = 57;
+                break;
+            case  "Allow Giving Unlimited FOC If The Customer Violat Payment Term with Password" :
+                keyTypeID = 58;
+                break;
+            case  "Allow Giving Unlimited FOC If The Customer Exceeds Credit Limit with Password" :
+                keyTypeID = 59;
+                break;
+            case  "Allow Giving Unlimited FOC If The Customer Exceeds Bill Number with Password" :
+                keyTypeID = 60;
+                break;
+            case  "Apply Key To Edit Collection Discount Percentage" :
+                keyTypeID = 61;
+                break;
+        }
+        EmployeeKeys employeeKeys = new EmployeeKeys();
+        Keyvalue = employeeKeys.getKey(keyTypeID);
+        driver.findElement(keyTextLocator).sendKeys(Keyvalue);
+        if(driver.isKeyboardShown()){
+            driver.hideKeyboard();
+        }
+        driver.findElement(employeeKeyOKButtonLocator).click();
+    }
 }

@@ -17,18 +17,20 @@ public class TestNGConfig {
     public static AndroidDriver driver;
     public static String EmulatorName;
     public static String AndroidVersion;
+    public static String EmployeeCode;
     public static WebDriverWait wait;
 
     AppiumDriverLocalService service = AppiumDriverLocalService.buildDefaultService();
 
-    @Parameters({"EmulatorName", "DeviceName", "AndroidVersion", "ApplicationPath"})
-    @BeforeTest
-    public void setup(@Optional String EmulatorName, String DeviceName, String AndroidVersion, String ApplicationPath) {
+    @Parameters({"EmulatorName", "DeviceName", "AndroidVersion", "ApplicationPath","EmployeeCode"})
+    @BeforeSuite
+    public void setup(@Optional String EmulatorName, String DeviceName, String AndroidVersion, String ApplicationPath, String EmployeeCode) {
         service.start();
 
         DesiredCapabilities MobileDevice = DesiredCapabilities.android();
         MobileDevice.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
         TestNGConfig.EmulatorName = EmulatorName;
+        TestNGConfig.EmployeeCode = EmployeeCode;
         TestNGConfig.AndroidVersion = AndroidVersion;
         if (EmulatorName != null) {
             MobileDevice.setCapability("avd", EmulatorName);
@@ -43,11 +45,11 @@ public class TestNGConfig {
         MobileDevice.setCapability("disableAndroidWatchers","true");
         MobileDevice.setCapability("skipUnlock","true");
         driver = new AndroidDriver<MobileElement> (service.getUrl(), MobileDevice);
-        wait = new WebDriverWait(driver, 120);
+        wait = new WebDriverWait(driver, 15);
 
     }
 
-    @AfterTest
+    @AfterSuite
     public void teardown() {
        driver.quit();
         if (EmulatorName != null) {

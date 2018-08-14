@@ -22,7 +22,7 @@ import java.util.List;
 public class EndOfDay extends TestNGConfig {
 SharedFunctions sharedFunctions = new SharedFunctions();
 By denominationsListviewLocator = By.id("SettlementList");
-By denominationBoxLocator = By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.support.v4.view.ViewPager/android.widget.LinearLayout/android.widget.ListView/android.widget.FrameLayout/android.widget.LinearLayout");
+By denominationBoxLocator = By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.support.v4.view.ViewPager/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.ListView/android.widget.FrameLayout/android.widget.LinearLayout");
 By denominationNameLocator = By.id("denomination");
 By denominationAmountLocator = By.id("amount");
 By amountPopupLocator = By.id("txt_PaidAmount");
@@ -34,8 +34,8 @@ By saveButtonLocator = By.id("action_save");
 By alertPopup = By.id("parentPanel");
 By alertMessage = By.id("message");
 By alertOkLocator = By.id("button2");
-Float expectedTotalCash ;
-Float expectedTotalCheque ;
+Double expectedTotalCash ;
+Double expectedTotalCheque ;
 List<List<String>> settlementData = new ArrayList<List<String>>();
 HashMap<String,String> denominationFillData = new HashMap<String,String>();
 int numberOfDenominationsToBeFilled;
@@ -52,14 +52,14 @@ ReadData readData = new ReadData();
             denominationFillData.put(settlementData.get(i).get(0),settlementData.get(i).get(1));
         }
 
-        expectedTotalCash = Float.valueOf(settlementData.get(numberOfDenominationsToBeFilled).get(1));
-        expectedTotalCheque = Float.valueOf(settlementData.get(numberOfDenominationsToBeFilled+1).get(1));
+        expectedTotalCash = Double.valueOf(settlementData.get(numberOfDenominationsToBeFilled).get(1));
+        expectedTotalCheque = Double.valueOf(settlementData.get(numberOfDenominationsToBeFilled+1).get(1));
         sharedFunctions.enterScreen("End of day");
         sharedFunctions.getMenuName("End Of Day");
-        Float actualTotalCash = Float.valueOf(driver.findElement(totalCashLocator).getText().replace(",",""));
+        Double actualTotalCash = Double.valueOf(driver.findElement(totalCashLocator).getText().replace(",",""));
         Assert.assertEquals(actualTotalCash,expectedTotalCash,"Wrong Total Cash");
 
-        Float actualTotalCheque = Float.valueOf(driver.findElement(totalChequeLocator).getText().replace(",",""));
+        Double actualTotalCheque = Double.valueOf(driver.findElement(totalChequeLocator).getText().replace(",",""));
         Assert.assertEquals(actualTotalCheque,expectedTotalCheque,"Wrong Total Cheque");
 
     WebElement listView = driver.findElement(denominationsListviewLocator);

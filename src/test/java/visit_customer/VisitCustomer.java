@@ -24,9 +24,11 @@ public class VisitCustomer extends TestNGConfig {
     By customerCodeLocator = By.id("tv_cust_code");
     By outletNameLocator = By.id("tv_cust_outlet");
     By checkInButtonLocator = By.id("btn_golden_continue");
+    By InVanAppSwitchLocator = By.xpath("//android.widget.TextView[@content-desc=\"InVan In Van\"]");
+
     Accounts accounts = new Accounts();
-    Float creditLimit=0f;
-    Float balance=0f;
+    Double creditLimit=0D;
+    Double balance=0D;
 
     @Parameters({"outletCode","outletName"})
     @Test
@@ -37,7 +39,7 @@ public void selectCustomer(String outletCode, String outletName) throws IOExcept
                         visibilityOfElementLocated(searchButtonLocator));
 
         try {
-            Float[] accountData = accounts.outletBalanceAndCredit(outletCode);
+            Double[] accountData = accounts.outletBalanceAndCredit(outletCode);
             creditLimit = accountData[0];
             balance = accountData[1];
         } catch (SQLException e) {
@@ -54,7 +56,11 @@ public void selectCustomer(String outletCode, String outletName) throws IOExcept
         outletLocator.click();
         if (AndroidVersion.equals("7.1.1") || AndroidVersion.equals("7.0") || AndroidVersion.equals("8.0") ) {
             driver.pressKeyCode(AndroidKeyCode.KEYCODE_APP_SWITCH);
-            driver.findElementByAccessibilityId("InVan In Van").click();
+            (new WebDriverWait(driver,10))
+                    .until(ExpectedConditions.
+                            visibilityOfElementLocated(InVanAppSwitchLocator));
+            driver.findElement(InVanAppSwitchLocator).click();
+
 
         }
     }
@@ -67,6 +73,7 @@ public void selectCustomer(String outletCode, String outletName) throws IOExcept
             ASSERTIONS TO BE ADDED LATER
             SOA IMPLEMENTATION TO BE ADDED LATER ALSO
             */
+                wait.until(ExpectedConditions.visibilityOfElementLocated(checkInButtonLocator));
         driver.findElement(checkInButtonLocator).click();
         sharedFunctions.getMenuName("Customer Menu");
     }

@@ -12,15 +12,11 @@ import java.sql.*;
 
 //readDataFromSqlite
 public  class SqliteAccess extends TestNGConfig {
-    // connection is created static so you are able to close it in another classes after using it
     public static Connection connection = null;
-
-    public ResultSet querySqliteData (String sqlStatement) throws SQLException, IOException {
-        if (connection!= null){
-            connection.close();
-        }
-        ResultSet set = null;
-        String filePath = "D://TestDB//";
+    ResultSet set = null;
+    String filePath = "D://TestDB//";
+    // connection is created static so you are able to close it in another classes after using it
+    public void copySqlliteToDevice() throws IOException {
         File directory = new File(filePath);
         if (!directory.exists()) {
             try {
@@ -31,7 +27,13 @@ public  class SqliteAccess extends TestNGConfig {
         }
 
         byte[] fileBase64 = driver.pullFile("/sdcard/InCube/data/InCube.sqlite");
-        Files.write(Paths.get(filePath+"InCube.sqlite"), fileBase64);
+        Files.write(Paths.get(filePath + "InCube.sqlite"), fileBase64);
+    }
+
+    public ResultSet querySqliteData (String sqlStatement) throws SQLException {
+        if (connection!= null){
+            connection.close();
+        }
 
         try {
             // create a database connection
