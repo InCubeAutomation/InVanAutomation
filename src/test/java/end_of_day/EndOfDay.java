@@ -56,7 +56,7 @@ ReadData readData = new ReadData();
         expectedTotalCash = Double.valueOf(settlementData.get(numberOfDenominationsToBeFilled).get(1));
         expectedTotalCheque = Double.valueOf(settlementData.get(numberOfDenominationsToBeFilled+1).get(1));
         sharedFunctions.enterScreen("End of day");
-        sharedFunctions.checkMenuName("End Of Day");
+        sharedFunctions.checkMenuName("End of Day");
         Double actualTotalCash = Double.valueOf(driver.findElement(totalCashLocator).getText().replace(",",""));
         Assert.assertEquals(actualTotalCash,expectedTotalCash,"Wrong Total Cash");
 
