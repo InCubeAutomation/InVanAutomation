@@ -1,7 +1,6 @@
 package inventory;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import read_data_excel.ReadData;
@@ -10,6 +9,7 @@ import shared_functions.SharedFunctions;
 import testng_config_methods.TestNGConfig;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,18 +28,19 @@ public class Load extends TestNGConfig {
 
     @Parameters({"filePath"})
     @Test
-    public void load(String filePath) {
+    public void load(String filePath) throws ParseException {
 
         itemsData = readData.readData(filePath, "Load");
 
         sharedFunctions.enterScreen("Inventory");
-        sharedFunctions.getMenuName("Inventory Menu");
+        sharedFunctions.checkMenuName("Inventory Menu");
         sharedFunctions.enterScreen("Load");
         sharedFunctions.enterStorekeeperPassword();
-        sharedFunctions.getMenuName("Load");
+        sharedFunctions.checkMenuName("Load");
 
         for (int i = 0; i < itemsData.size(); i++) {
-            itemAmount = AddItem.addItem(itemsData.get(i).get(0), itemsData.get(i).get(1), itemsData.get(i).get(2),false,false,false,"","","");
+            AddItem addItem = new AddItem();
+            itemAmount = addItem.addItem("Load",itemsData.get(i).get(0), itemsData.get(i).get(1), itemsData.get(i).get(2),false,false,"","","");
             loadValue = loadValue.add(itemAmount);
             itemAmount = BigDecimal.ZERO;
         }
@@ -52,9 +53,9 @@ public class Load extends TestNGConfig {
         }
 
             driver.findElement(yesSaveLocator).click();
-            sharedFunctions.getMenuName("Inventory Menu");
+            sharedFunctions.checkMenuName("Inventory Menu");
             driver.navigate().back();
-            sharedFunctions.getMenuName("Main Menu");
+            sharedFunctions.checkMenuName("Main Menu");
 
 
         }

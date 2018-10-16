@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="InVan Delivery">
+    <parameter name="EmployeeCode"  value="VS004"/>
+    <parameter name="EmulatorName"  value="And-1"/>
+    <parameter name="DeviceName"  value="And-1"/>
+    <!--parameter name="DeviceName"  value="356468071404213"/-->
+    <parameter name="AndroidVersion"  value="7.1.1"/>
+    <parameter name="ApplicationPath"  value="D:/InVan-debug.apk"/>
+    <test name="Start of Day and Load Out" >
+        <classes>
+            <class name="start_of_day.Login">
+                <methods>
+                    <include name="login" />
+                </methods>
+            </class>
+            </classes>
+    </test>
+    <test name="Visit Customer With Transactions" >
+        <classes>
+            <class name="visit_customer.VisitCustomer">
+                <methods>
+                    <include name="selectCustomer">
+                        <parameter name="outletCode"  value="SHJ0438"/>
+                        <parameter name="outletName"  value="ABU MOOSAH"/>
+                    </include>
+                    <include name="goldenMinute"></include>
+                </methods>
+            </class>
+            <class name="visit_customer.Delivery">
+                <methods>
+                    <include name="delivery">
+                        <parameter name="outletCode"  value="SHJ0438"/>
+                        <parameter name="salesMode"  value="Credit"/>
+                        <parameter name="orderIDToDeliver"  value="O-VS_SYS_ADMIN000034"/>
+                        <parameter name="filePath"  value="src\test\resources\customer_data\CustomerTransactions.xlsx"/>
+                    </include>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    <test name = "Delivery 2">
+        <classes>
+            <class name="visit_customer.Delivery">
+                <methods>
+                    <include name="delivery">
+                        <parameter name="outletCode"  value="SHJ0438"/>
+                        <parameter name="salesMode"  value="Credit"/>
+                        <parameter name="orderIDToDeliver"  value="O-VS_SYS_ADMIN000035"/>
+                        <parameter name="filePath"  value="src\test\resources\customer_data\CustomerTransactions-d2.xlsx"/>
+                    </include>
+                </methods>
+            </class>
+                </classes>
+    </test>
+    <test name = "Delivery 3">
+        <classes>
+            <class name="visit_customer.Delivery">
+                <methods>
+                    <include name="delivery">
+                        <parameter name="outletCode"  value="SHJ0438"/>
+                        <parameter name="salesMode"  value="Credit"/>
+                        <parameter name="orderIDToDeliver"  value="O-VS_SYS_ADMIN000036"/>
+                        <parameter name="filePath"  value="src\test\resources\customer_data\CustomerTransactions-d3.xlsx"/>
+                    </include>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name = "Delivery 4">
+        <classes>
+            <class name="visit_customer.Delivery">
+                <methods>
+                    <include name="delivery">
+                        <parameter name="outletCode"  value="SHJ0438"/>
+                        <parameter name="salesMode"  value="Credit"/>
+                        <parameter name="orderIDToDeliver"  value="O-VS_SYS_ADMIN000037"/>
+                        <parameter name="filePath"  value="src\test\resources\customer_data\CustomerTransactions-d4.xlsx"/>
+                    </include>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    <test name = "Delivery 5">
+        <classes>
+            <class name="visit_customer.Delivery">
+                <methods>
+                    <include name="delivery">
+                        <parameter name="outletCode"  value="SHJ0438"/>
+                        <parameter name="salesMode"  value="Credit"/>
+                        <parameter name="orderIDToDeliver"  value="O-VS004002218"/>
+                        <parameter name="filePath"  value="src\test\resources\customer_data\CustomerTransactions-d5.xlsx"/>
+                    </include>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

@@ -10,40 +10,44 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ReadData extends TestNGConfig {
+    Iterator<Row> rowIterator;
 
     public  List<List<String>> readData (String filePath, String readDataMode) {
-        List<List<String>> itemsData = new ArrayList<List<String>>();
+        List<List<String>> rowsData = new ArrayList<List<String>>();
         try {
             Sheet sheetToRead = null;
         DataFormatter dataFormatter = new DataFormatter();
         File file = new File(filePath);
-        Workbook transactionsData = WorkbookFactory.create(file);
-        Iterator<Sheet> sheetIterator = transactionsData.sheetIterator();
+        Workbook excelData = WorkbookFactory.create(file);
+        Iterator<Sheet> sheetIterator = excelData.sheetIterator();
 
-        for (Sheet sheet : transactionsData) {
+        for (Sheet sheet : excelData) {
             if (readDataMode.equals(sheet.getSheetName())) {
                 sheetToRead = sheet;
             }
             sheetIterator.next();
         }
-
-        Iterator<Row> rowIterator = sheetToRead.rowIterator();
+        if(sheetToRead!=null) {
+            rowIterator = sheetToRead.rowIterator();
+        } else  {
+            Assert.fail("Sheet doesn't exist in path");
+        }
         rowIterator.next();
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
-            List<String> itemData = new ArrayList<String> ();
+            List<String> rowData = new ArrayList<String> ();
             Iterator<Cell> cellIterator = row.cellIterator();
             while (cellIterator.hasNext()) {
                 Cell cell = cellIterator.next();
-                itemData.add(dataFormatter.formatCellValue(cell));
+                rowData.add(dataFormatter.formatCellValue(cell));
             }
-            itemsData.add(itemData);
+            rowsData.add(rowData);
         }
         } catch (Throwable throwable) {// In case exception happen
             Assert.fail("Read Item Data failed, " +
                     "please check log: \n" + throwable.getMessage());
         }
-return  itemsData;
+return  rowsData;
     }
 }
 

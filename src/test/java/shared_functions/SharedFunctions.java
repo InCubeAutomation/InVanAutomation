@@ -2,8 +2,13 @@ package shared_functions;
 
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -16,10 +21,13 @@ import testng_config_methods.TestNGConfig;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 public class SharedFunctions extends TestNGConfig {
 
@@ -37,31 +45,56 @@ public class SharedFunctions extends TestNGConfig {
     }
 
     public void enterScreen(String menuName){
+        By firstMenuLocator = By.id("menu_name_1");
+        boolean swipeLeft = true;
+        By menuViewLocator = By.xpath("//ancestor::*[*[@text='"+menuName+"']]");
         TouchAction touchAction = new TouchAction(driver);
-        By menuNameTextLocator = By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.support.v4.view.ViewPager/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.TextView[@text='" +
-                menuName + "']");
-        while (!elementExists(menuNameTextLocator)){
+        while (!elementExists(menuViewLocator) && swipeLeft){
+            String firstMenuNameBefore = driver.findElement(firstMenuLocator).getText();
             swipe("left");
+            String firstMenuNameAfter = driver.findElement(firstMenuLocator).getText();
+            if(firstMenuNameBefore.equals(firstMenuNameAfter)){
+                swipeLeft = false;
+            }
         }
-        int xTextCoords   = driver.findElement(menuNameTextLocator).getLocation().getX();
-        int yTextCoords   = driver.findElement(menuNameTextLocator).getLocation().getY();
-        int textSize =  driver.findElement(menuNameTextLocator).getSize().getWidth();
-        touchAction.press(PointOption.point(xTextCoords+textSize/2,yTextCoords-20)).release().perform();
+
+        while (!elementExists(menuViewLocator) && !swipeLeft){
+            swipe("right");
+        }
+
+        int xmenuViewCoords   = driver.findElement(menuViewLocator).getLocation().getX();
+        int ymenuViewCoords   = driver.findElement(menuViewLocator).getLocation().getY();
+        int menuViewWidth =  driver.findElement(menuViewLocator).getSize().getWidth();
+        int menuViewHeight =  driver.findElement(menuViewLocator).getSize().getHeight();
+        touchAction.press(PointOption.point(xmenuViewCoords+menuViewWidth/2,ymenuViewCoords+menuViewHeight/2)).release().perform();
     }
 
-    public void getMenuName(String menuName){
+    public void checkMenuName(String menuName){
         By menuNameTextLocator;
                 if (AndroidVersion.equals("7.0") || AndroidVersion.equals("7.1.1") || AndroidVersion.equals("8.0")){
                     menuNameTextLocator = By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.view.ViewGroup/android.widget.TextView[@text='"
-                        + menuName + "']");}
-                        else {
+                        + menuName + "']");
+                } else {
                     menuNameTextLocator = By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.view.View/android.widget.TextView[@text='"
-                + menuName + "']");}
-        (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.
-                        visibilityOfElementLocated(menuNameTextLocator));
+                + menuName + "']");
+                        }
 
-        Assert.assertEquals(driver.findElement(menuNameTextLocator).getText(), menuName, "Wrong Menu");
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(menuNameTextLocator));
+
+        softAssert.assertEquals(driver.findElement(menuNameTextLocator).getText(), menuName, "Wrong Menu");
+    }
+
+    public String getMenuName(){
+        By menuNameTextLocator;
+        if (AndroidVersion.equals("7.0") || AndroidVersion.equals("7.1.1") || AndroidVersion.equals("8.0")){
+            menuNameTextLocator = By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.view.ViewGroup/android.widget.TextView");
+        } else {
+            menuNameTextLocator = By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.view.View/android.widget.TextView");
+        }
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(menuNameTextLocator));
+        String menuName = driver.findElement(menuNameTextLocator).getText();
+        return menuName;
     }
 
     public void scrollUp(){
@@ -72,7 +105,7 @@ public class SharedFunctions extends TestNGConfig {
         int topY = driver.manage().window().getSize().height  * 1/5 ;
 //        touchAction.longPress(pressX,bottomY).moveTo(pressX,topY).perform();
         TouchAction touchAction = new TouchAction(driver);
-        touchAction.longPress(PointOption.point(pressX,topY)).moveTo(PointOption.point(0,bottomY-topY)).
+        touchAction.longPress(PointOption.point(pressX,topY)).moveTo(PointOption.point(pressX,bottomY)).
                 waitAction(new WaitOptions().withDuration(Duration.ofSeconds(1))).release().perform();
     }
 
@@ -84,7 +117,7 @@ public class SharedFunctions extends TestNGConfig {
           int topY = driver.manage().window().getSize().height  * 4/33 ;
 //        touchAction.longPress(pressX,bottomY).moveTo(pressX,topY).perform();
         TouchAction touchAction = new TouchAction(driver);
-        touchAction.longPress(PointOption.point(pressX,bottomY)).moveTo(PointOption.point(0,topY-bottomY)).
+        touchAction.longPress(PointOption.point(pressX,bottomY)).moveTo(PointOption.point(pressX,topY)).
                 waitAction(new WaitOptions().withDuration(Duration.ofSeconds(1))).release().perform();
     }
 
@@ -92,8 +125,19 @@ public class SharedFunctions extends TestNGConfig {
         try {
             driver.findElement(elementLocator);
             return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+    public Boolean elementExistsWithWait (By elementLocator) {
+        driver.manage().timeouts().implicitlyWait(4, TimeUnit.SECONDS);
+        try {
+            driver.findElement(elementLocator);
+            return true;
         } catch (NoSuchElementException e){
         return false;
+        }finally {
+            driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
         }
     }
 
@@ -114,11 +158,11 @@ public class SharedFunctions extends TestNGConfig {
 //        touchAction.longPress(pressX,bottomY).moveTo(pressX,topY).perform();
         TouchAction touchAction = new TouchAction(driver);
         if (direction.equals("left")) {
-            touchAction.longPress(PointOption.point(rightX, pressY)).moveTo(PointOption.point(leftX-rightX, 0)).
+            touchAction.longPress(PointOption.point(rightX, pressY)).moveTo(PointOption.point(leftX, pressY)).
                     waitAction(new WaitOptions().withDuration(Duration.ofSeconds(1))).release().perform();
         }
         else if (direction.equals("right")) {
-            touchAction.longPress(PointOption.point(leftX, pressY)).moveTo(PointOption.point(rightX-leftX, 0)).
+            touchAction.longPress(PointOption.point(leftX, pressY)).moveTo(PointOption.point(rightX, pressY)).
                     waitAction(new WaitOptions().withDuration(Duration.ofSeconds(1))).release().perform();
         }
     }
@@ -156,6 +200,7 @@ public class SharedFunctions extends TestNGConfig {
                 calendarCurrentMonth = "April";
                 break;
             case "May":
+                calendarCurrentMonth = "May";
                 break;
             case "Jun":
                 calendarCurrentMonth = "June";
@@ -216,9 +261,33 @@ public class SharedFunctions extends TestNGConfig {
     }
         public void takeScreenshot(String filePath){
             File srcFiler = driver.getScreenshotAs(OutputType.FILE);
+            File file = new File(filePath);
+            File directory = file.getParentFile();
+            if (!directory.exists()) {
+                try {
+                    Files.createDirectories(Paths.get(filePath));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(file.exists()){
+                file.delete();
+            }
             try {
-                FileUtils.copyFile(srcFiler, new File(filePath));
+                FileUtils.copyFile(srcFiler, file);
             } catch (IOException e) {
+                e.printStackTrace();
+            }
+            while (!file.canRead()){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -424,5 +493,42 @@ public class SharedFunctions extends TestNGConfig {
             driver.hideKeyboard();
         }
         driver.findElement(employeeKeyOKButtonLocator).click();
+    }
+
+    public void sendKeys(String keysToSend, By elementLocator) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(elementLocator)).sendKeys(keysToSend);
+        if (driver.isKeyboardShown()) {
+            driver.hideKeyboard();
+        }
+    }
+    public String convertImageToText(String filePath){
+            String result = null;
+            File imageFile = new File(filePath);
+            ITesseract instance = new Tesseract();
+            try {
+                result = instance.doOCR(imageFile).toLowerCase().replaceAll("\n"," ");
+
+            } catch (TesseractException e) {
+                System.err.println(e.getMessage());
+            }
+
+            return result;
+    }
+
+    public void skipAppiumActivityOverActivityHanging(long milliSecondstoWait){
+        By InVanAppSwitchLocator = By.xpath("//android.widget.TextView[@content-desc=\"InVan In Van\"]");
+        try {
+            Thread.sleep(milliSecondstoWait);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        driver.pressKey(new KeyEvent(AndroidKey.APP_SWITCH));
+        try {
+            Thread.sleep(milliSecondstoWait);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        wait.until(ExpectedConditions.visibilityOfElementLocated(InVanAppSwitchLocator));
+        driver.findElement(InVanAppSwitchLocator).click();
     }
 }

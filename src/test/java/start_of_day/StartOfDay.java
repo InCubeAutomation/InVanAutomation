@@ -1,13 +1,10 @@
 package start_of_day;
 
-import com.sun.org.apache.xerces.internal.xs.StringList;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
 import shared_functions.SharedFunctions;
 import testng_config_methods.TestNGConfig;
 
@@ -50,16 +47,14 @@ public class StartOfDay extends TestNGConfig  {
     @Test
     public void startOfDay() {
         sharedFunctions.enterScreen("Start of day");
-        sharedFunctions.getMenuName("Start of day");
+        sharedFunctions.checkMenuName("Start of day");
         if(sharedFunctions.elementExists(odometerTextLocator)){
             String focused =  driver.findElement(odometerTextLocator).getAttribute("focused");
-            if(focused=="true"){
-                driver.getKeyboard().sendKeys("999999999");
-            }
-            else {
+            if(!focused.equals("true")){
                 driver.findElement(odometerTextLocator).click();
-                driver.getKeyboard().sendKeys("999999999");
             }
+            driver.findElement(odometerTextLocator).sendKeys("999999999");
+
             driver.hideKeyboard();
         }
         softAssert.assertEquals(driver.findElement(vanCodeLocator).getText(),"HA05", "Wrong Van Code");
@@ -73,16 +68,14 @@ public class StartOfDay extends TestNGConfig  {
 
     @Test
     public void inspection() {
-        sharedFunctions.getMenuName("Van Inspection");
+        sharedFunctions.checkMenuName("Van Inspection");
         String focused =  driver.findElement(odometerTextLocator).getAttribute("focused");
         softAssert.assertEquals(focused,"true","Not focused");
-        if(focused=="true"){
-            driver.getKeyboard().sendKeys("999999999");
-        }
-        else {
+        if(!focused.equals("true")){
             driver.findElement(odometerTextLocator).click();
-            driver.getKeyboard().sendKeys("999999999");
         }
+            driver.findElement(odometerTextLocator).sendKeys("999999999");
+
         driver.hideKeyboard();
         driver.findElement(lightLocator).click();
         driver.findElement(breaksLocator).click();

@@ -60,11 +60,11 @@ public class Configurations extends SqliteAccess {
         return keyValue;
     }
 
-    public String customerConfigurationValue(String keyName, String outletCode, String employeeCode, String selectedDivisionCode) throws IOException, SQLException {
+    public String customerConfigurationValue(String configurationName, String outletCode, String employeeCode, String selectedDivisionCode) throws IOException, SQLException {
         copySqlliteToDevice();
         sqlStatement = "select keyvalue from Configurationcustout inner join customeroutlet on " +
                 "Configurationcustout.customerid =   customeroutlet.customerid and Configurationcustout.outletid =   customeroutlet.outletid " +
-                "and customeroutlet.customercode = '" + outletCode + "' and Configurationcustout.keyname = '" + keyName + "'";
+                "and customeroutlet.customercode = '" + outletCode + "' and Configurationcustout.keyname = '" + configurationName + "'";
         res = querySqliteData(sqlStatement);
         if (res.getFetchSize() > 0) {
             keyValue = res.getString(1);
@@ -74,7 +74,7 @@ public class Configurations extends SqliteAccess {
             sqlStatement = "select keyvalue from Configurationcustomergroup inner join customeroutletgroup on " +
                     "Configurationcustomergroup.groupid = customeroutletgroup.groupid " +
                     "inner join customeroutlet on customeroutletgroup.customerid =   customeroutlet.customerid and customeroutletgroup.outletid = customeroutlet.outletid " +
-                    "and customeroutlet.customercode = '" + outletCode + "' and Configurationcustomergroup.keyname = '" + keyName + "' Limit 1";
+                    "and customeroutlet.customercode = '" + outletCode + "' and Configurationcustomergroup.keyname = '" + configurationName + "' Limit 1";
             res = querySqliteData(sqlStatement);
             if (res.getFetchSize() > 0) {
                 keyValue = res.getString(1);
@@ -84,7 +84,7 @@ public class Configurations extends SqliteAccess {
                         "customergroup.SubChannelID = ConfigurationChannel.SubChannelID " +
                         "inner join customeroutletgroup on customergroup.GroupID = customeroutletgroup.GroupID " +
                         "inner join customeroutlet on customeroutletgroup.customerid =   customeroutlet.customerid and customeroutletgroup.outletid = customeroutlet.outletid " +
-                        "and customeroutlet.customercode = '" + outletCode + "' and ConfigurationChannel.keyname = '" + keyName + "' Limit 1";
+                        "and customeroutlet.customercode = '" + outletCode + "' and ConfigurationChannel.keyname = '" + configurationName + "' Limit 1";
                 res = querySqliteData(sqlStatement);
                 if (res.getFetchSize() > 0) {
                     keyValue = res.getString(1);
@@ -95,13 +95,13 @@ public class Configurations extends SqliteAccess {
                             "customergroup.ChannelID = ConfigurationChannel.ChannelID " +
                             "inner join customeroutletgroup on customergroup.GroupID = customeroutletgroup.GroupID " +
                             "inner join customeroutlet on customeroutletgroup.customerid =   customeroutlet.customerid and customeroutletgroup.outletid = customeroutlet.outletid " +
-                            "and customeroutlet.customercode = '" + outletCode + "' and ConfigurationChannel.keyname = '" + keyName + "' Limit 1";
+                            "and customeroutlet.customercode = '" + outletCode + "' and ConfigurationChannel.keyname = '" + configurationName + "' Limit 1";
                     res = querySqliteData(sqlStatement);
                     if (res.getFetchSize() > 0) {
                         keyValue = res.getString(1);
                     } else {
                         connection.close();
-                        keyValue=generalConfigurationValue(keyName,employeeCode,selectedDivisionCode);
+                        keyValue=generalConfigurationValue(configurationName,employeeCode,selectedDivisionCode);
                     }
                 }
             }

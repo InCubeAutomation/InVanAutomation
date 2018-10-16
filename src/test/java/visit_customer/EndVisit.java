@@ -21,6 +21,6 @@ By customersListView = By.id("lv_customerlist") ;
             driver.hideKeyboard();
         }
         driver.navigate().back();
-        sharedFunctions.getMenuName("Main Menu");
+        sharedFunctions.checkMenuName("Main Menu");
     }
 }

@@ -1,10 +1,10 @@
 package visit_customer;
 import io.appium.java_client.MobileElement;
-import io.appium.java_client.android.AndroidKeyCode;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import read_data_excel.ReadData;
@@ -49,7 +49,7 @@ public class Collection  extends TestNGConfig {
         int numberOfPayments = paymentmethodsData.size();
 
         sharedFunctions.enterScreen("Collection");
-        sharedFunctions.getMenuName("Collection");
+        sharedFunctions.checkMenuName("Collection");
         (new WebDriverWait(driver, 10))
                 .until(ExpectedConditions.
                         visibilityOfElementLocated(invoiceListViewLocator));
@@ -63,8 +63,8 @@ public class Collection  extends TestNGConfig {
                     invoiceBox.get(j).findElement(checkBoxLocator).click(); }
                     else {
                         invoiceBox.get(j).findElement(invoiceIDLocator).click();
-                        driver.pressKeyCode(AndroidKeyCode.KEYCODE_DEL);
-                        driver.getKeyboard().sendKeys(amountToPay);
+                        driver.pressKey(new KeyEvent(AndroidKey.DEL));
+                        driver.findElement(paidAmountLocator).sendKeys(amountToPay);
                         driver.findElement(okPaidAmountLocator).click();
                         if (driver.isKeyboardShown()){
                             driver.hideKeyboard();
@@ -75,7 +75,7 @@ public class Collection  extends TestNGConfig {
             }
         }
         driver.findElement(payInvoicesLocator).click();
-        sharedFunctions.getMenuName("Payment Details");
+        sharedFunctions.checkMenuName("Payment Details");
 //        "1]"
         for(int i=0;i<numberOfPayments;i++) {
             By bankNameToSelectLocator=null;
@@ -106,17 +106,13 @@ public class Collection  extends TestNGConfig {
             driver.findElement(addPaymentLocator).click();
             String focusable = driver.findElement(amountTextLocator).getAttribute("focused");
             softAssert.assertEquals(focusable, "true", "Not focused");
-            if (focusable.equals("true")) {
-                driver.pressKeyCode(AndroidKeyCode.KEYCODE_DEL);
-                driver.getKeyboard().sendKeys(payemntAmount);
-                driver.hideKeyboard();
-            } else {
-
+            if (!focusable.equals("true")) {
                 driver.findElement(amountTextLocator).click();
-                driver.pressKeyCode(AndroidKeyCode.KEYCODE_DEL);
-                driver.getKeyboard().sendKeys(payemntAmount);
-                driver.hideKeyboard();
             }
+                driver.pressKey(new KeyEvent(AndroidKey.DEL));
+                driver.findElement(amountTextLocator).sendKeys(payemntAmount);
+                driver.hideKeyboard();
+
             driver.findElement(paymentTypeLocator).click();
             driver.findElement(paymentTypeToSelectLocator).click();
 
@@ -143,6 +139,6 @@ public class Collection  extends TestNGConfig {
         if(sharedFunctions.elementExists(invoiceListViewLocator)) {
             driver.navigate().back();
         }
-            sharedFunctions.getMenuName("Customer Menu");
+            sharedFunctions.checkMenuName("Customer Menu");
     }
 }

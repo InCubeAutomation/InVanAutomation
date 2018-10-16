@@ -1,6 +1,6 @@
 package inventory;
 
-import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.MobileElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -28,7 +28,7 @@ public class LoadOut extends TestNGConfig {
     String[] expectedPackandQtyArray = {"4001 - Outer = 2","4001 - Carton = 11","4002 - Carton = 1","4002 - Carton = 9"};
     List<String> expectedPackandQty  = Arrays.asList(expectedPackandQtyArray);
 
-    List<AndroidElement> itemCardLocators =  new ArrayList<>();
+    List<MobileElement> itemCardLocators =  new ArrayList<>();
     List<String> actualPackandQty =  new ArrayList<>();
     List<String> itemQty =  new ArrayList<>();
     List<String> itemUOMXpath =  new ArrayList<>();
@@ -37,10 +37,10 @@ public class LoadOut extends TestNGConfig {
     @Test
     public void loadOut(){
         sharedFunctions.enterScreen("Inventory");
-        sharedFunctions.getMenuName("Inventory Menu");
+        sharedFunctions.checkMenuName("Inventory Menu");
         sharedFunctions.enterScreen("Load Out");
         sharedFunctions.enterStorekeeperPassword();
-        sharedFunctions.getMenuName("Load Out");
+        sharedFunctions.checkMenuName("Load Out");
         (new WebDriverWait(driver, 10))
                 .until(ExpectedConditions.
                         visibilityOfElementLocated(listViewLocator));
@@ -80,9 +80,9 @@ public class LoadOut extends TestNGConfig {
                 .until(ExpectedConditions.
                         visibilityOfElementLocated(yesSaveLocator));
         driver.findElement(yesSaveLocator).click();
-        sharedFunctions.getMenuName("Inventory Menu");
+        sharedFunctions.checkMenuName("Inventory Menu");
         driver.navigate().back();
-        sharedFunctions.getMenuName("Main Menu");
+        sharedFunctions.checkMenuName("Main Menu");
         softAssert.assertAll();
     }
 }

@@ -2,7 +2,8 @@ package end_of_day;
 
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
-import io.appium.java_client.android.AndroidKeyCode;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.By;
@@ -55,7 +56,7 @@ ReadData readData = new ReadData();
         expectedTotalCash = Double.valueOf(settlementData.get(numberOfDenominationsToBeFilled).get(1));
         expectedTotalCheque = Double.valueOf(settlementData.get(numberOfDenominationsToBeFilled+1).get(1));
         sharedFunctions.enterScreen("End of day");
-        sharedFunctions.getMenuName("End Of Day");
+        sharedFunctions.checkMenuName("End Of Day");
         Double actualTotalCash = Double.valueOf(driver.findElement(totalCashLocator).getText().replace(",",""));
         Assert.assertEquals(actualTotalCash,expectedTotalCash,"Wrong Total Cash");
 
@@ -75,14 +76,12 @@ ReadData readData = new ReadData();
 
                 denominationBox.get(i).click();
                 String focusable = driver.findElement(amountPopupLocator).getAttribute("focused");
-                if (focusable.equals("true")) {
-                    driver.pressKeyCode(AndroidKeyCode.KEYCODE_DEL);
-                    driver.getKeyboard().sendKeys(denominationFillData.get(denominationName));
-                } else {
+                if (!focusable.equals("true")) {
                     driver.findElement(amountPopupLocator).click();
-                    driver.pressKeyCode(AndroidKeyCode.KEYCODE_DEL);
-                    driver.getKeyboard().sendKeys(denominationFillData.get(denominationName));
                 }
+                    driver.pressKey(new KeyEvent(AndroidKey.DEL));
+                    driver.findElement(amountPopupLocator).sendKeys(denominationFillData.get(denominationName));
+
                 driver.findElement(popupOkLocator).click();
                 denominationFillData.remove(denominationName);
                 numberOfDenominationsFilled++;
@@ -90,30 +89,30 @@ ReadData readData = new ReadData();
                 int bottomY2 = denominationBox.get(i).getCenter().getY();
                 TouchAction touchAction = new TouchAction(driver);
 
-                touchAction.longPress(PointOption.point(pressX2,bottomY2)).waitAction(new WaitOptions().withDuration(Duration.ofMillis(400))).moveTo(PointOption.point(0,-20)).release().perform();
+                touchAction.longPress(PointOption.point(pressX2,bottomY2)).waitAction(new WaitOptions().withDuration(Duration.ofMillis(400))).moveTo(PointOption.point(pressX2,bottomY2-20)).release().perform();
 
             }
         }
         }
         TouchAction touchAction = new TouchAction(driver);
-        touchAction.longPress(PointOption.point(pressX,bottomY-1)).waitAction(new WaitOptions().withDuration(Duration.ofMillis(400))).moveTo(PointOption.point(0,topY-bottomY)).release().perform();
+        touchAction.longPress(PointOption.point(pressX,bottomY-1)).waitAction(new WaitOptions().withDuration(Duration.ofMillis(400))).moveTo(PointOption.point(pressX,topY-1)).release().perform();
 
     }
             driver.findElement(settlementButtonLocator).click();
             driver.findElement(saveButtonLocator).click();
             driver.findElement(popupOkLocator).click();
-            sharedFunctions.getMenuName("EOD Reports");
+            sharedFunctions.checkMenuName("EOD Reports");
             driver.navigate().back();
             if(sharedFunctions.elementExists(alertPopup)){
                 if (driver.findElement(alertPopup).findElement(alertMessage).getText().equals("Route data should be downloaded before proceeding.")){
                     driver.findElement(alertOkLocator).click();
                     if (AndroidVersion.equals("7.1.1") || AndroidVersion.equals("7.0") || AndroidVersion.equals("8.0")){
-                        driver.pressKeyCode(AndroidKeyCode.KEYCODE_APP_SWITCH);
+                        driver.pressKey(new KeyEvent(AndroidKey.APP_SWITCH));
                         driver.findElementByAccessibilityId("InVan In Van").click();
                     }
                 }
             }
-            sharedFunctions.getMenuName("Main Menu");
+            sharedFunctions.checkMenuName("Main Menu");
 
     }
 }

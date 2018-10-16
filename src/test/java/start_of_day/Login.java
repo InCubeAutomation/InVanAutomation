@@ -2,11 +2,14 @@ package start_of_day;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import shared_functions.SharedFunctions;
+import sqlite_access.RouteGeneralData;
 import testng_config_methods.TestNGConfig;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 
 public class Login extends TestNGConfig {
@@ -17,25 +20,24 @@ public class Login extends TestNGConfig {
     By loginButtonLocator = By.id("email_sign_in_button");
     SharedFunctions sharedFunctions = new SharedFunctions();
     @Test
-    public void login()  {
-
+    public void login() throws IOException, SQLException {
 
       // By MainMenuText = By.xpath("/MainMenuActivity/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.view.ViewGroup/android.widget.TextView.[@text='Add']");
-
-        (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.
-                        visibilityOfElementLocated(loggedInNameLocator));
-        Assert.assertEquals(driver.findElement(loggedInNameLocator).getText(), "\"M\" Mohammad Tasawar", "Wrong User");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(loggedInNameLocator));
+        RouteGeneralData.getGeneralData();
+        if(RouteGeneralData.Uploaded) {
+            Assert.assertEquals(driver.findElement(loggedInNameLocator).getText().trim(), RouteGeneralData.EmployeeName.trim(), "Wrong User");
+        }
         driver.findElement(usernameLocator).sendKeys("1");
         driver.findElement(passwordLocator).sendKeys("1");
         if(driver.isKeyboardShown()) {
             driver.hideKeyboard();
         }
         driver.findElement(loginButtonLocator).click();
-        (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.
-                        invisibilityOfElementLocated(loginMessageLocator));
-        sharedFunctions.getMenuName("Main Menu");
+        if(!RouteGeneralData.Uploaded) {
+            RouteGeneralData.getGeneralData();
+        }
+        sharedFunctions.checkMenuName("Main Menu");
 
     }
 

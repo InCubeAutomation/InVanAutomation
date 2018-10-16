@@ -13,8 +13,8 @@ import java.io.IOException;
 
 public class TestNGConfig {
 
-    public static  SoftAssert softAssert = new SoftAssert();
-    public static AndroidDriver driver;
+    public static SoftAssert softAssert = new SoftAssert();
+    public static AndroidDriver<MobileElement> driver;
     public static String EmulatorName;
     public static String AndroidVersion;
     public static String EmployeeCode;

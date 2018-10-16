@@ -12,7 +12,6 @@ import shared_functions.SharedFunctions;
 import testng_config_methods.TestNGConfig;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -39,7 +38,7 @@ public class Returns extends TestNGConfig {
 
     @Parameters({"filePath"})
     @Test
-    public void returns (String filePath) {
+    public void returns (String filePath) throws ParseException {
         itemsData = readData.readData(filePath, "Returns");
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setGroupingSeparator(',');
@@ -48,10 +47,11 @@ public class Returns extends TestNGConfig {
         df.setParseBigDecimal(true);
         df.setRoundingMode(RoundingMode.HALF_UP);
         sharedFunctions.enterScreen("Return");
-        sharedFunctions.getMenuName("Return");
+        sharedFunctions.checkMenuName("Return");
 
         for (int i = 0; i < itemsData.size(); i++) {
-            itemAmount = AddItem.addItem(itemsData.get(i).get(0), itemsData.get(i).get(1), itemsData.get(i).get(2),true,true,false,itemsData.get(i).get(3),itemsData.get(i).get(4),itemsData.get(i).get(5));
+            AddItem addItem = new AddItem();
+            itemAmount = addItem.addItem("Returns",itemsData.get(i).get(0), itemsData.get(i).get(1), itemsData.get(i).get(2),true,true,itemsData.get(i).get(3),itemsData.get(i).get(4),itemsData.get(i).get(5));
             returnsValue = returnsValue.add(itemAmount);
             itemAmount = BigDecimal.ZERO;
         }
